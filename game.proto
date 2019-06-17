@@ -1,0 +1,62 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package game;
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "poc.game";
+option java_outer_classname = "GameProto";
+option objc_class_prefix = "RTG";
+
+service Game {
+  rpc Join(Player) returns (stream GameMsg) {}
+  rpc TryGuess(Guess) returns (stream GameResult) {}
+}
+
+message Player {
+  string name = 1;
+}
+
+message GameMsg {
+  int32 round = 1;
+  string endsAt = 2;
+  repeated Player players = 3;
+  repeated Guess guesses = 4;
+}
+
+message Guess {
+  GameMsg game = 1;
+  int32 guess = 2;
+  Player player = 3;
+  int32 targetDistance = 4;
+}
+
+message Ranking {
+  int32 place = 1;
+  int32 points = 2;
+  Player player = 3;
+  int32 matchesPlayed = 4;
+  int32 bullsEye = 5;
+}
+
+message GameResult {
+  int32 targetNumber = 1;
+  repeated Player winners = 2;
+  GameMsg game = 3;
+  repeated Ranking ranking = 4;
+}
